@@ -148,18 +148,18 @@ async function addR() {
                     }          
                 },
                 {
-                    name: "rDName",
+                    name: "rDId",
                     type: "list",
                     message: "What is the id of the department the new role belongs to?",
                     choices: deptsR
                 }
             ]);
-            const {rTitle, rSalary, rDName} = newR;
+            const {rTitle, rSalary, rDId} = newR;
             connection.query("INSERT INTO role SET ?", 
             {
                 title: rTitle, 
                 salary: rSalary, 
-                department_id: rDName
+                department_id: rDId
             }, 
             function(err, results) {
                 if (err) throw err;
@@ -174,6 +174,108 @@ async function addR() {
             }
         });
 
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function addE() {
+    try {
+        connection.query("SELECT role.id FROM role", async function(err, results) {
+            try {
+                if (err) throw err;
+    
+                const rolesE = results.map(function(role) {
+                    return role['id'];
+                });
+                const newE = await inquirer.prompt([
+                    {
+                        name: "eFName",
+                        type: "input",
+                        message: "What is the first name of the new employee?"
+                    },
+                    {
+                        name: "eLName",
+                        type: "input",
+                        message: "What is the last name of the new employee?"
+                    },
+                    {
+                        name: "eRId",
+                        type: "list",
+                        message: "What is the id of the role of the new employee?",
+                        choices: rolesE
+                    },
+                    {
+                        name: "eM",
+                        type: "confirm",
+                        message: "Does this employee have a manager?",       
+                    }
+                    
+                ]);
+                const {eFName, eLName, eRId, eM} = newE;
+                let eMId;
+                
+                if (!eM) {
+                    eMId = null;
+
+                    connection.query("INSERT INTO employee SET ?", 
+                    {
+                        first_name: eFName, 
+                        last_name: eLName, 
+                        role_id: eRId,
+                        manager_id: eMId
+                    }, 
+                    function(err, results) {
+                        if (err) throw err;
+                
+                        console.log(` `);
+                        console.table("Employee Successfully Added!");
+                        console.log(` `);
+                        start();
+                    });
+                }
+                else if (eM) {
+                    connection.query("SELECT employee.id FROM employee", async function(err, results) {
+                        try {
+                            if (err) throw err;
+                
+                            const idsE = results.map(function(employee) {
+                                return employee['id'];
+                            });
+
+                            const managerE = await inquirer.prompt({
+                                name: "mEId",
+                                type: "list",
+                                message: "What is the employee id of the new employee's manager?",
+                                choices: idsE
+                            });
+                            const {mEId} = managerE;
+                            eMId = mEId;
+
+                            connection.query("INSERT INTO employee SET ?", 
+                            {
+                                first_name: eFName, 
+                                last_name: eLName, 
+                                role_id: eRId,
+                                manager_id: eMId
+                            }, 
+                            function(err, results) {
+                                if (err) throw err;
+                        
+                                console.log(` `);
+                                console.table("Employee Successfully Added!");
+                                console.log(` `);
+                                start();
+                            });
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        });
     } catch (err) {
         console.log(err);
     }
