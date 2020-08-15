@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require('console.table');
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -17,6 +18,9 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
+  console.log(` `);
+  console.log(`Welcome to the Employees Tracker Content Management System command-line application!`);
+  console.log(` `);
   start();
 });
 
@@ -66,4 +70,14 @@ async function start() {
     } catch (err) {
         console.log(err);
     }
+}
+
+function viewD() {
+    connection.query("SELECT department.department FROM department", function(err, results) {
+        if (err) throw err;
+
+        console.log(` `);
+        console.table(results);
+        start();
+    });
 }
