@@ -280,3 +280,59 @@ async function addE() {
         console.log(err);
     }
 }
+
+async function updateER() {
+    try {
+        connection.query("SELECT employee.id FROM employee", async function(err, results) {
+            try {
+                if (err) throw err;
+    
+                const eIds = results.map(function(employee) {
+                    return employee['id'];
+                });
+
+                connection.query("SELECT role.id FROM role", async function(err, results) {
+                    try {
+                        if (err) throw err;
+            
+                        const idsR = results.map(function(role) {
+                            return role['id'];
+                        });
+
+                        const who = await inquirer.prompt([
+                            {
+                                name: "eId",
+                                type: "list",
+                                message: "What is the id of the employee whose role you would like to change?",
+                                choices: eIds
+                            },
+                            {
+                                name: "idR",
+                                type: "list",
+                                message: "What is the id of the role you would like to change to?",
+                                choices: idsR
+                            }
+                        ]);
+                        const {eId, idR} = who;
+
+                        connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [idR, eId], function(err, result) {
+                            if (err) throw err;
+
+                            console.log(` `);
+                            console.table("Employee Role Successfully Updated!");
+                            console.log(` `);
+                            start();
+                        });
+                        
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
