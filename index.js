@@ -103,3 +103,20 @@ function viewE() {
         start();
     });
 }
+
+async function addD() {
+    const newD = await inquirer.prompt({
+        name: "dName",
+        type: "input",
+        message: "What is the name of the new department?"
+    });
+    const {dName} = newD;
+    connection.query("INSERT INTO department (department) VALUES (?)", dName, function(err, results) {
+        if (err) throw err;
+
+        console.log(` `);
+        console.table("Department Successfully Added!");
+        console.log(` `);
+        start();
+    });
+}
