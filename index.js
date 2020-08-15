@@ -73,7 +73,7 @@ async function start() {
 }
 
 function viewD() {
-    connection.query("SELECT department.department FROM department", function(err, results) {
+    connection.query("SELECT * FROM department", function(err, results) {
         if (err) throw err;
 
         console.log(` `);
@@ -83,7 +83,7 @@ function viewD() {
 }
 
 function viewR() {
-    connection.query("SELECT role.title FROM role", function(err, results) {
+    connection.query("SELECT role.id, role.title FROM role", function(err, results) {
         if (err) throw err;
 
         console.log(` `);
@@ -119,4 +119,62 @@ async function addD() {
         console.log(` `);
         start();
     });
+}
+
+async function addR() {
+    try {
+        connection.query("SELECT department.id FROM department", async function(err, results) {
+            try {
+                if (err) throw err;
+    
+            const deptsR = results.map(function(dept) {
+                return dept['id'];
+            });
+            const newR = await inquirer.prompt([
+                {
+                    name: "rTitle",
+                    type: "input",
+                    message: "What is the title of the new role?"
+                },
+                {
+                    name: "rSalary",
+                    type: "number",
+                    message: "What is the salary of the new role?",
+                    validate: function(value) {
+                        if (isNaN(value) === false) {
+                          return true;
+                        }
+                        return false;
+                    }          
+                },
+                {
+                    name: "rDName",
+                    type: "list",
+                    message: "What is the id of the department the new role belongs to?",
+                    choices: deptsR
+                }
+            ]);
+            const {rTitle, rSalary, rDName} = newR;
+            connection.query("INSERT INTO role SET ?", 
+            {
+                title: rTitle, 
+                salary: rSalary, 
+                department_id: rDName
+            }, 
+            function(err, results) {
+                if (err) throw err;
+        
+                console.log(` `);
+                console.table("Role Successfully Added!");
+                console.log(` `);
+                start();
+            });
+            } catch (err) {
+                console.log(err);
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
 }
