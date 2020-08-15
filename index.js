@@ -91,3 +91,15 @@ function viewR() {
         start();
     });
 }
+
+function viewE() {
+    connection.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
+    FROM employee INNER JOIN role ON employee.role_id = role.id 
+    INNER JOIN department ON role.department_id = department.id`, function(err, results) {
+        if (err) throw err;
+
+        console.log(` `);
+        console.table(results);
+        start();
+    });
+}
