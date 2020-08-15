@@ -81,3 +81,13 @@ function viewD() {
         start();
     });
 }
+
+function viewR() {
+    connection.query("SELECT role.title FROM role", function(err, results) {
+        if (err) throw err;
+
+        console.log(` `);
+        console.table(results);
+        start();
+    });
+}
