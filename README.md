@@ -2,7 +2,7 @@
 
 ## Description
 
-This repository was created so I could create a comand-line application that utilizes user input and a MySQL database to creare a Content Management System that keeps track of employees. You can watch a video demonstrating the application's functionallity by clicking [here](https://drive.google.com/file/d/1zRFfUm2rze-rIrQnXd2W0hFzSULy9_QQ/view?usp=sharing).
+This repository was created so I could create a comand-line application that utilizes user input and a MySQL database to creare a Content Management System that keeps track of employees. You can watch a video demonstrating the application's functionallity by clicking [here](https://drive.google.com/file/d/1Ey31BQuIQdzrTeF16-RMi4iD2ERZ8gE9/view?usp=sharing).
 
 ![image](https://i.ibb.co/5hXbnzz/CMS-Employee-Tracker.png)
 
