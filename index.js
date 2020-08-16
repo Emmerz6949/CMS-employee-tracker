@@ -76,6 +76,7 @@ async function start() {
     }
 }
 
+//view all departments
 function viewD() {
     connection.query("SELECT * FROM department", function(err, results) {
         if (err) throw err;
@@ -86,6 +87,7 @@ function viewD() {
     });
 }
 
+//view all roles
 function viewR() {
     connection.query("SELECT role.id, role.title FROM role", function(err, results) {
         if (err) throw err;
@@ -96,6 +98,7 @@ function viewR() {
     });
 }
 
+//view all employees
 function viewE() {
     connection.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
     FROM employee INNER JOIN role ON employee.role_id = role.id 
@@ -108,6 +111,7 @@ function viewE() {
     });
 }
 
+//add a department
 async function addD() {
     const newD = await inquirer.prompt({
         name: "dName",
@@ -125,6 +129,7 @@ async function addD() {
     });
 }
 
+//add a role
 async function addR() {
     try {
         connection.query("SELECT department.id FROM department", async function(err, results) {
@@ -148,7 +153,11 @@ async function addR() {
                         if (isNaN(value) === false) {
                           return true;
                         }
-                        return false;
+                        console.log(` 
+                         `);
+                        console.table("This value must be a number!");
+                        console.log(` `);
+                        return connection.end();
                     }          
                 },
                 {
@@ -183,6 +192,7 @@ async function addR() {
     }
 }
 
+//add an employee
 async function addE() {
     try {
         connection.query("SELECT role.id FROM role", async function(err, results) {
@@ -285,6 +295,7 @@ async function addE() {
     }
 }
 
+//update employee's role
 async function updateER() {
     try {
         connection.query("SELECT employee.id FROM employee", async function(err, results) {
@@ -341,6 +352,7 @@ async function updateER() {
     }
 }
 
+//update employee's manager
 async function updateEM() {
     try {
         connection.query("SELECT employee.id FROM employee", async function(err, results) {
