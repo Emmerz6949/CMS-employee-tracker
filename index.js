@@ -38,6 +38,7 @@ async function start() {
               "Add a Role",
               "Add an Employee",
               "Update an Existing Employee's Role",
+              "Update an Existing Employee's Manager",
               "Exit"
             ]
         });
@@ -62,6 +63,9 @@ async function start() {
         }
         else if (yado === "Update an Existing Employee's Role") {
             updateER();
+        }
+        else if (yado === "Update an Existing Employee's Manager") {
+            updateEM();
         }
         else {
             connection.end();
@@ -319,7 +323,7 @@ async function updateER() {
                             if (err) throw err;
 
                             console.log(` `);
-                            console.table("Employee Role Successfully Updated!");
+                            console.table("Employee's Role Successfully Updated!");
                             console.log(` `);
                             start();
                         });
@@ -328,6 +332,56 @@ async function updateER() {
                         console.log(err);
                     }
                 });
+            } catch (err) {
+                console.log(err);
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function updateEM() {
+    try {
+        connection.query("SELECT employee.id FROM employee", async function(err, results) {
+            try {
+                if (err) throw err;
+    
+                const empIds = results.map(function(employee) {
+                    return employee['id'];
+                });
+
+                const mangIds = results.map(function(employee) {
+                    return employee['id'];
+                });
+                mangIds.push({id: null});
+
+
+                const whowho = await inquirer.prompt([
+                    {
+                        name: "empId",
+                        type: "list",
+                        message: "What is the id of the employee whose manager you would like to change?",
+                        choices: empIds
+                    },
+                    {
+                        name: "mangId",
+                        type: "list",
+                        message: "What is the id of the manager you would like to change to?",
+                        choices: mangIds
+                    }
+                ]);
+                const {empId, mangId} = whowho;
+
+                connection.query("UPDATE employee SET manager_id = ? WHERE id = ?", [mangId, empId], function(err, result) {
+                    if (err) throw err;
+
+                    console.log(` `);
+                    console.table("Employee's Manager Successfully Updated!");
+                    console.log(` `);
+                    start();
+                });
+
             } catch (err) {
                 console.log(err);
             }
